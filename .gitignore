@@ -1,0 +1,8 @@
+# python bytecode
+__pycache__/
+
+# ide, editor
+.idea/
+
+# others
+private/
