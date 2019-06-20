@@ -15,20 +15,15 @@
 """windows, console"""
 
 # standard library imports
-import os.path
 from pathlib import Path
 import logging
 from logging.handlers import RotatingFileHandler
 import time
-import winreg as wr
 
 # related third party imports
-import netifaces
 import wmi
 
-# registry path for network interface names
-REG_KEY = wr.HKEY_LOCAL_MACHINE
-REG_NETWORK = "SYSTEM\\CurrentControlSet\\Control\\Network\\{4d36e972-e325-11ce-bfc1-08002be10318}"
+PHYSICAL_DISK_TAG = "\\\\.\\PHYSICALDRIVE0"
 
 # create log directory
 file = Path(__file__)
@@ -75,66 +70,37 @@ ch.setFormatter(formatter)
 logger.addHandler(fh)
 logger.addHandler(ch)
 
-CHUNK = 4096
-
 
 def main():
-    logger.info("Start system_info")
     network_info = get_network_info()
-    for i in network_info:
-        num = netifaces.AF_LINK
-        if num in i["if_addresses"]:
-            print(i["if_addresses"][num])
-    hdd_info = get_hdd_info()
-    print(f"hdd info: {hdd_info['tag']}, {hdd_info['serial_number']}")
-    logger.info("End system_info")
+    physical_disk_info = get_physical_disk_info()
+    print(network_info)
+    print(physical_disk_info)
 
 
 def get_network_info():
-    interfaces = netifaces.interfaces()
-    info = []
+    conn = wmi.WMI()
+    interfaces = conn.Win32_NetworkAdapterConfiguration()
+    network_info = []
     for interface in interfaces:
-        logger.debug(f"interface: {interface}")
-        if_addresses = netifaces.ifaddresses(interface)
-        logger.debug(f"if_addresses: {if_addresses}")
-        if_name = _get_interface_name(interface)
-        info.append({
-            "interface": interface,
-            "if_name": if_name,
-            "if_addresses": if_addresses,
-        })
-        # if netifaces.AF_INET in ifaddresses:
-        #     ifaddress = ifaddresses[netifaces.AF_INET]
-        #     return(f"interface: {interface}, ifaddress: {ifaddress}")
-
-        # MAC: info["if_addresses"][-1000][0]["addr"]
-        # -1000 = netifaces.AF_LINK
-        # IP: info["if_addresses"][2][0]["addr"]
-        # 2 = netifaces.AF_INET
-    return info
+        if interface.IPEnabled:
+            network_info.append({
+                "name": interface.Description,
+                "ip": interface.IPAddress[0],
+                "mac": interface.MACAddress,
+            })
+    return network_info
 
 
-def _get_interface_name(interface_id):
-    subkey = os.path.join(REG_NETWORK, interface_id, "Connection")
-    value_name = "Name"
-    try:
-        with wr.OpenKey(REG_KEY, subkey) as key:
-            interface_name = wr.QueryValueEx(key, value_name)[0]
-            logger.debug(f"interface_name: {interface_name}")
-    except FileNotFoundError:
-        return None
-    return interface_name
-
-
-def get_hdd_info():
+def get_physical_disk_info():
     conn = wmi.WMI()
     for item in conn.Win32_PhysicalMedia():
-        if item.Tag == "\\\\.\\PHYSICALDRIVE0":
-            hdd_info = {
-                "tag": item.Tag,
+        if item.Tag == PHYSICAL_DISK_TAG:
+            physical_disk_info = {
+                "tag": PHYSICAL_DISK_TAG,
                 "serial_number": item.SerialNumber,
             }
-            return hdd_info
+            return physical_disk_info
 
 
 if __name__ == "__main__":
