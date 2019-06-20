@@ -12,15 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# windows, console
+"""windows, console"""
 
-import netifaces
-import winreg as wr
-import os
+# standard library imports
+import os.path
 from pathlib import Path
 import logging
 from logging.handlers import RotatingFileHandler
 import time
+import winreg as wr
+
+# related third party imports
+import netifaces
+import wmi
 
 # registry path for network interface names
 REG_KEY = wr.HKEY_LOCAL_MACHINE
@@ -37,9 +41,9 @@ if not output_path.exists():
 if not log_path.exists():
     Path.mkdir(log_path)
 
-# create logger
+# create logger, set logging level
 logger = logging.getLogger('system_info')
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 # set time zone to utc
 logging.Formatter.converter = time.gmtime
@@ -52,11 +56,11 @@ fh = RotatingFileHandler(
     maxBytes=50*1024*1024,
     backupCount=5
 )
-fh.setLevel(logging.INFO)
+fh.setLevel(logging.DEBUG)
 
 # create console handler
 ch = logging.StreamHandler()
-ch.setLevel(logging.INFO)
+ch.setLevel(logging.WARNING)
 
 # create formatter
 formatter = logging.Formatter(
@@ -75,35 +79,62 @@ CHUNK = 4096
 
 
 def main():
-    network_info = NetworkInfo()
-    info = network_info.get_info()
-    for i in info:
-        print(i)
+    logger.info("Start system_info")
+    network_info = get_network_info()
+    for i in network_info:
+        num = netifaces.AF_LINK
+        if num in i["if_addresses"]:
+            print(i["if_addresses"][num])
+    hdd_info = get_hdd_info()
+    print(f"hdd info: {hdd_info['tag']}, {hdd_info['serial_number']}")
+    logger.info("End system_info")
 
 
-class NetworkInfo:
-    def get_info(self):
-        interfaces = netifaces.interfaces()
-        info = []
-        for interface in interfaces:
-            if_address = netifaces.ifaddresses(interface)
-            if_name = self.get_interface_name(interface)
-            info.append({
-                "interface": interface,
-                "if_name": if_name,
-                "if_addresses": if_address,
-            })
-            # if netifaces.AF_INET in ifaddresses:
-            #     ifaddress = ifaddresses[netifaces.AF_INET]
-            #     return(f"interface: {interface}, ifaddress: {ifaddress}")
-        return info
+def get_network_info():
+    interfaces = netifaces.interfaces()
+    info = []
+    for interface in interfaces:
+        logger.debug(f"interface: {interface}")
+        if_addresses = netifaces.ifaddresses(interface)
+        logger.debug(f"if_addresses: {if_addresses}")
+        if_name = _get_interface_name(interface)
+        info.append({
+            "interface": interface,
+            "if_name": if_name,
+            "if_addresses": if_addresses,
+        })
+        # if netifaces.AF_INET in ifaddresses:
+        #     ifaddress = ifaddresses[netifaces.AF_INET]
+        #     return(f"interface: {interface}, ifaddress: {ifaddress}")
 
-    def get_interface_name(self, interface_id):
-        subkey = os.path.join(REG_NETWORK, interface_id, "Connection")
-        value_name = "Name"
+        # MAC: info["if_addresses"][-1000][0]["addr"]
+        # -1000 = netifaces.AF_LINK
+        # IP: info["if_addresses"][2][0]["addr"]
+        # 2 = netifaces.AF_INET
+    return info
+
+
+def _get_interface_name(interface_id):
+    subkey = os.path.join(REG_NETWORK, interface_id, "Connection")
+    value_name = "Name"
+    try:
         with wr.OpenKey(REG_KEY, subkey) as key:
             interface_name = wr.QueryValueEx(key, value_name)[0]
-        return interface_name
+            logger.debug(f"interface_name: {interface_name}")
+    except FileNotFoundError:
+        return None
+    return interface_name
+
+
+def get_hdd_info():
+    conn = wmi.WMI()
+    for item in conn.Win32_PhysicalMedia():
+        if item.Tag == "\\\\.\\PHYSICALDRIVE0":
+            hdd_info = {
+                "tag": item.Tag,
+                "serial_number": item.SerialNumber,
+            }
+            return hdd_info
 
 
 if __name__ == "__main__":
