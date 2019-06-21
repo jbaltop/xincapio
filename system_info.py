@@ -44,11 +44,7 @@ logging.Formatter.converter = time.gmtime
 
 # create file handler
 fh = RotatingFileHandler(
-    LOG_FILE,
-    'at',
-    encoding='utf-8',
-    maxBytes=50*1024*1024,
-    backupCount=5
+    LOG_FILE, "at", encoding="utf-8", maxBytes=50 * 1024 * 1024, backupCount=5
 )
 fh.setLevel(logging.DEBUG)
 
@@ -58,11 +54,9 @@ ch.setLevel(logging.INFO)
 
 # create formatter
 fh_formatter = logging.Formatter(
-    '%(asctime)s UTC - %(name)s - %(levelname)s - %(message)s'
+    "%(asctime)s UTC - %(name)s - %(levelname)s - %(message)s"
 )
-ch_formatter = logging.Formatter(
-    '%(name)s - %(levelname)s - %(message)s'
-)
+ch_formatter = logging.Formatter("%(name)s - %(levelname)s - %(message)s")
 
 # add formatter
 fh.setFormatter(fh_formatter)
@@ -87,11 +81,13 @@ def get_network_info():
     network_info = []
     for interface in interfaces:
         if interface.IPEnabled:
-            network_info.append({
-                "name": interface.Description,
-                "ip": interface.IPAddress[0],
-                "mac": interface.MACAddress,
-            })
+            network_info.append(
+                {
+                    "name": interface.Description,
+                    "ip": interface.IPAddress[0],
+                    "mac": interface.MACAddress,
+                }
+            )
     return network_info
 
 
