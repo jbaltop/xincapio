@@ -96,6 +96,7 @@ def get_disk_info():
                     "serial_number": disk["serial"],
                 }
                 return disk_info
+    return None
 
 
 def main():
@@ -105,5 +106,5 @@ def main():
     print(disk_info)
 
 
-if __name__== "__main__":
+if __name__ == "__main__":
     main()

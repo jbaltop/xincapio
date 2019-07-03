@@ -101,6 +101,7 @@ def get_physical_disk_info():
                 "serial_number": item.SerialNumber,
             }
             return physical_disk_info
+    return None
 
 
 if __name__ == "__main__":
