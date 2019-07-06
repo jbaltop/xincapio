@@ -14,13 +14,13 @@
 
 """windows, console"""
 
-# standard library imports
-from pathlib import Path
+# standard library
 import logging
-from logging.handlers import RotatingFileHandler
 import time
+from logging.handlers import RotatingFileHandler
+from pathlib import Path
 
-# related third party imports
+# third party library
 import wmi
 
 FILE = Path(__file__)

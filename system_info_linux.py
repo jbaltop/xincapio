@@ -20,7 +20,7 @@ import time
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-# third party
+# third party library
 import netifaces as ni
 from blkinfo import BlkDiskInfo
 
