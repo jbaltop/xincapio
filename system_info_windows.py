@@ -23,8 +23,6 @@ import time
 # related third party imports
 import wmi
 
-PHYSICAL_DISK_TAG = "\\\\.\\PHYSICALDRIVE0"
-
 FILE = Path(__file__)
 PROJECT = FILE.parent
 OUTPUT = PROJECT / "output"
@@ -67,13 +65,6 @@ logger.addHandler(fh)
 logger.addHandler(ch)
 
 
-def main():
-    network_info = get_network_info()
-    physical_disk_info = get_physical_disk_info()
-    print(network_info)
-    print(physical_disk_info)
-
-
 def get_network_info():
     logger.info("Getting network info.")
     conn = wmi.WMI()
@@ -91,17 +82,26 @@ def get_network_info():
     return network_info
 
 
-def get_physical_disk_info():
+def get_disk_info():
     logger.info("Getting physical disk info.")
     conn = wmi.WMI()
-    for item in conn.Win32_PhysicalMedia():
-        if item.Tag == PHYSICAL_DISK_TAG:
-            physical_disk_info = {
-                "tag": PHYSICAL_DISK_TAG,
-                "serial_number": item.SerialNumber,
-            }
-            return physical_disk_info
-    return None
+    disk_info = []
+    for disk in conn.Win32_PhysicalMedia():
+        disk_info.append({
+            "tag": disk.Tag,
+            "serial_number": disk.SerialNumber.strip(),
+        })
+    return disk_info
+
+
+def main():
+    network_info = get_network_info()
+    disk_info = get_disk_info()
+    system_info = {
+        "network": network_info,
+        "disk": disk_info,
+    }
+    print(system_info)
 
 
 if __name__ == "__main__":

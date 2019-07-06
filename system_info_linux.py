@@ -24,8 +24,6 @@ from pathlib import Path
 import netifaces as ni
 from blkinfo import BlkDiskInfo
 
-DISK_NAME = "sda"
-
 FILE = Path(__file__)
 PROJECT = FILE.parent
 OUTPUT = PROJECT / "output"
@@ -88,22 +86,24 @@ def get_disk_info():
     logger.info("Getting disk info.")
     myblkd = BlkDiskInfo()
     disks = myblkd.get_disks()
+    disk_info = []
     for disk in disks:
         if disk["type"] == "disk":
-            if disk["name"] == DISK_NAME:
-                disk_info = {
-                    "name": DISK_NAME,
-                    "serial_number": disk["serial"],
-                }
-                return disk_info
-    return None
+            disk_info.append({
+                "name": disk["name"],
+                "serial_number": disk["serial"],
+            })
+    return disk_info
 
 
 def main():
     network_info = get_network_info()
     disk_info = get_disk_info()
-    print(network_info)
-    print(disk_info)
+    system_info = {
+        "network": network_info,
+        "disk": disk_info,
+    }
+    print(system_info)
 
 
 if __name__ == "__main__":
