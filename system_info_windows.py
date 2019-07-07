@@ -92,10 +92,11 @@ def get_disk_info():
     logger.info("Getting physical disk info.")
     conn = wmi.WMI()
     disk_info = []
-    for disk in conn.Win32_PhysicalMedia():
+    for disk in conn.Win32_DiskDrive(["DeviceID", "Index", "SerialNumber"]):
         disk_info.append({
-            "tag": disk.Tag,
-            "serial_number": disk.SerialNumber.strip(),
+            "device_id": disk.DeviceID,
+            "index": disk.Index,
+            "serial_number": disk.SerialNumber,
         })
     return disk_info
 
