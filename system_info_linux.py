@@ -15,8 +15,13 @@
 """linux, console"""
 
 # standard library
+import fcntl
 import json
 import logging
+import re
+import shlex
+import struct
+import subprocess
 import time
 from datetime import datetime as dt
 from logging.handlers import RotatingFileHandler
@@ -24,7 +29,6 @@ from pathlib import Path
 
 # third party library
 import netifaces as ni
-from blkinfo import BlkDiskInfo
 
 UTC_DATETIME_FMT = "%Y-%m-%dT%H:%M:%S.%fZ"
 
@@ -90,15 +94,34 @@ def get_network_info():
 
 def get_disk_info():
     logger.info("Getting disk info.")
-    myblkd = BlkDiskInfo()
-    disks = myblkd.get_disks()
-    disk_info = []
-    for disk in disks:
-        if disk["type"] == "disk":
-            disk_info.append({
-                "name": disk["name"],
-                "serial_number": disk["serial"],
-            })
+    out = subprocess.Popen(shlex.split("df /"), stdout=subprocess.PIPE).communicate()
+    m = re.search(r'(/[^\s]+)\s', str(out))
+    mount_point = m.group(1)
+
+    with open(mount_point, "rb") as fd:
+        # tediously derived from the monster struct defined in <hdreg.h>
+        # see comment at end of file to verify
+        hd_driveid_format_str = (
+            "@ 10H 20s 3H 8s 40s 2B H 2B H 4B 6H 2B I 36H I Q 152H"
+        )
+        # Also from <hdreg.h>
+        HDIO_GET_IDENTITY = 0x030D
+        # How big a buffer do we need?
+        sizeof_hd_driveid = struct.calcsize(hd_driveid_format_str)
+
+        # ensure our format string is the correct size
+        # 512 is extracted using sizeof(struct hd_id) in the c code
+        assert sizeof_hd_driveid == 512
+
+        # Call native function
+        buf = fcntl.ioctl(fd, HDIO_GET_IDENTITY, " " * sizeof_hd_driveid)
+        fields = struct.unpack(hd_driveid_format_str, buf)
+        serial_number = fields[10].strip().decode()
+
+    disk_info = {
+        "mount_point": mount_point,
+        "serial_number": serial_number,
+    }
     return disk_info
 
 
@@ -116,7 +139,7 @@ def main():
     disk_info = get_disk_info()
     system_info = {
         "network": network_info,
-        "disk": disk_info,
+        "boot_disk": disk_info,
     }
     save_info(system_info)
     print(system_info)
