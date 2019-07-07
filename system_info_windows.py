@@ -17,6 +17,8 @@
 # standard library
 import json
 import logging
+import re
+import subprocess
 import time
 from datetime import datetime as dt
 from logging.handlers import RotatingFileHandler
@@ -90,15 +92,23 @@ def get_network_info():
 
 def get_disk_info():
     logger.info("Getting physical disk info.")
+    command = "wmic bootconfig get caption"
+    stdoutdata, stderrdata = subprocess.Popen(command, stdout=subprocess.PIPE).communicate()
+    out = stdoutdata.decode().replace("\r", "")
+    pattern = re.compile(r"\\Device\\Harddisk(?P<harddisk>[\d])+\\Partition(?P<partition>[\d])+")
+    result = pattern.search(out)
+    disk_index = int(result.group("harddisk"))
+
     conn = wmi.WMI()
-    disk_info = []
     for disk in conn.Win32_DiskDrive(["DeviceID", "Index", "SerialNumber"]):
-        disk_info.append({
-            "device_id": disk.DeviceID,
-            "index": disk.Index,
-            "serial_number": disk.SerialNumber,
-        })
-    return disk_info
+        if disk.Index == disk_index:
+            disk_info = {
+                "device_id": disk.DeviceID,
+                "index": disk.Index,
+                "serial_number": disk.SerialNumber,
+            }
+            return disk_info
+    return None
 
 
 def save_info(system_info):
