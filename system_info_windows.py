@@ -14,22 +14,28 @@
 
 """windows, console"""
 
-# standard library imports
-from pathlib import Path
+# standard library
+import json
 import logging
-from logging.handlers import RotatingFileHandler
+import re
+import subprocess
 import time
+from datetime import datetime as dt
+from logging.handlers import RotatingFileHandler
+from pathlib import Path
 
-# related third party imports
+# third party library
 import wmi
 
-PHYSICAL_DISK_TAG = "\\\\.\\PHYSICALDRIVE0"
+UTC_DATETIME_FMT = "%Y-%m-%dT%H:%M:%S.%fZ"
 
+# file path
 FILE = Path(__file__)
 PROJECT = FILE.parent
 OUTPUT = PROJECT / "output"
 LOG = OUTPUT / "log"
 LOG_FILE = LOG / f"{FILE.stem}.log"
+DATA_FILE = OUTPUT / "system_info.json"
 
 # create log directory
 if not Path.exists(LOG):
@@ -67,13 +73,6 @@ logger.addHandler(fh)
 logger.addHandler(ch)
 
 
-def main():
-    network_info = get_network_info()
-    physical_disk_info = get_physical_disk_info()
-    print(network_info)
-    print(physical_disk_info)
-
-
 def get_network_info():
     logger.info("Getting network info.")
     conn = wmi.WMI()
@@ -91,16 +90,48 @@ def get_network_info():
     return network_info
 
 
-def get_physical_disk_info():
-    logger.info("Getting physical disk info.")
+def get_disk_info():
+    logger.info("Getting boot disk caption.")
+    command = "wmic bootconfig get caption"
+    stdoutdata, stderrdata = subprocess.Popen(
+        command, stdout=subprocess.PIPE
+    ).communicate()
+    out = stdoutdata.decode().replace("\r", "")
+    pattern = re.compile(
+        r"\\Device\\Harddisk(?P<harddisk>[\d])+\\Partition(?P<partition>[\d])+"
+    )
+    result = pattern.search(out)
+    disk_index = int(result.group("harddisk"))
+
+    logger.info("Getting boot disk serial number.")
     conn = wmi.WMI()
-    for item in conn.Win32_PhysicalMedia():
-        if item.Tag == PHYSICAL_DISK_TAG:
-            physical_disk_info = {
-                "tag": PHYSICAL_DISK_TAG,
-                "serial_number": item.SerialNumber,
+    for disk in conn.Win32_DiskDrive(["DeviceID", "Index", "SerialNumber"]):
+        if disk.Index == disk_index:
+            disk_info = {
+                "device_id": disk.DeviceID,
+                "index": disk.Index,
+                "serial_number": disk.SerialNumber,
             }
-            return physical_disk_info
+            return disk_info
+    return None
+
+
+def save_info(system_info):
+    logger.info("Saving info to file.")
+    now = dt.utcnow().strftime(UTC_DATETIME_FMT)
+    data = system_info.copy()
+    data.update({"creation_time": now})
+    json_data = json.dumps(data)
+    with open(DATA_FILE, "wt", encoding="utf-8") as fout:
+        fout.write(json_data)
+
+
+def main():
+    network_info = get_network_info()
+    disk_info = get_disk_info()
+    system_info = {"network": network_info, "disk": disk_info}
+    save_info(system_info)
+    print(system_info)
 
 
 if __name__ == "__main__":
