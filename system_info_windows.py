@@ -93,9 +93,13 @@ def get_network_info():
 def get_disk_info():
     logger.info("Getting boot disk caption.")
     command = "wmic bootconfig get caption"
-    stdoutdata, stderrdata = subprocess.Popen(command, stdout=subprocess.PIPE).communicate()
+    stdoutdata, stderrdata = subprocess.Popen(
+        command, stdout=subprocess.PIPE
+    ).communicate()
     out = stdoutdata.decode().replace("\r", "")
-    pattern = re.compile(r"\\Device\\Harddisk(?P<harddisk>[\d])+\\Partition(?P<partition>[\d])+")
+    pattern = re.compile(
+        r"\\Device\\Harddisk(?P<harddisk>[\d])+\\Partition(?P<partition>[\d])+"
+    )
     result = pattern.search(out)
     disk_index = int(result.group("harddisk"))
 
@@ -125,10 +129,7 @@ def save_info(system_info):
 def main():
     network_info = get_network_info()
     disk_info = get_disk_info()
-    system_info = {
-        "network": network_info,
-        "disk": disk_info,
-    }
+    system_info = {"network": network_info, "disk": disk_info}
     save_info(system_info)
     print(system_info)
 

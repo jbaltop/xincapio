@@ -84,18 +84,16 @@ def get_network_info():
         if_addresses = ni.ifaddresses(interface)
         mac = if_addresses[ni.AF_LINK][0]["addr"]
         ip = if_addresses[ni.AF_INET][0]["addr"]
-        network_info.append({
-            "name": interface,
-            "ip": ip,
-            "mac": mac,
-        })
+        network_info.append({"name": interface, "ip": ip, "mac": mac})
     return network_info
 
 
 def get_disk_info():
     logger.info("Getting boot disk mount.")
-    out = subprocess.Popen(shlex.split("df /"), stdout=subprocess.PIPE).communicate()
-    m = re.search(r'(/[^\s]+)\s', str(out))
+    out = subprocess.Popen(
+        shlex.split("df /"), stdout=subprocess.PIPE
+    ).communicate()
+    m = re.search(r"(/[^\s]+)\s", str(out))
     mount_point = m.group(1)
 
     logger.info("Getting boot disk serial number.")
@@ -119,10 +117,7 @@ def get_disk_info():
         fields = struct.unpack(hd_driveid_format_str, buf)
         serial_number = fields[10].strip().decode()
 
-    disk_info = {
-        "mount_point": mount_point,
-        "serial_number": serial_number,
-    }
+    disk_info = {"mount_point": mount_point, "serial_number": serial_number}
     return disk_info
 
 
@@ -139,10 +134,7 @@ def save_info(system_info):
 def main():
     network_info = get_network_info()
     disk_info = get_disk_info()
-    system_info = {
-        "network": network_info,
-        "boot_disk": disk_info,
-    }
+    system_info = {"network": network_info, "boot_disk": disk_info}
     save_info(system_info)
     print(system_info)
 
