@@ -93,11 +93,12 @@ def get_network_info():
 
 
 def get_disk_info():
-    logger.info("Getting disk info.")
+    logger.info("Getting boot disk mount.")
     out = subprocess.Popen(shlex.split("df /"), stdout=subprocess.PIPE).communicate()
     m = re.search(r'(/[^\s]+)\s', str(out))
     mount_point = m.group(1)
 
+    logger.info("Getting boot disk serial number.")
     with open(mount_point, "rb") as fd:
         # tediously derived from the monster struct defined in <hdreg.h>
         # see comment at end of file to verify
@@ -126,6 +127,7 @@ def get_disk_info():
 
 
 def save_info(system_info):
+    logger.info("Saving info to file.")
     now = dt.utcnow().strftime(UTC_DATETIME_FMT)
     data = system_info.copy()
     data.update({"creation_time": now})

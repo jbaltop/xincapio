@@ -91,7 +91,7 @@ def get_network_info():
 
 
 def get_disk_info():
-    logger.info("Getting physical disk info.")
+    logger.info("Getting boot disk caption.")
     command = "wmic bootconfig get caption"
     stdoutdata, stderrdata = subprocess.Popen(command, stdout=subprocess.PIPE).communicate()
     out = stdoutdata.decode().replace("\r", "")
@@ -99,6 +99,7 @@ def get_disk_info():
     result = pattern.search(out)
     disk_index = int(result.group("harddisk"))
 
+    logger.info("Getting boot disk serial number.")
     conn = wmi.WMI()
     for disk in conn.Win32_DiskDrive(["DeviceID", "Index", "SerialNumber"]):
         if disk.Index == disk_index:
@@ -112,6 +113,7 @@ def get_disk_info():
 
 
 def save_info(system_info):
+    logger.info("Saving info to file.")
     now = dt.utcnow().strftime(UTC_DATETIME_FMT)
     data = system_info.copy()
     data.update({"creation_time": now})
