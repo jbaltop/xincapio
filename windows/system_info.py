@@ -20,48 +20,47 @@ import subprocess
 # third party library
 import wmi
 
+logger = logging.getLogger(__name__)
 
-class SystemInfo:
-    def __init__(self):
-        self.logger = logging.getLogger(__name__)
 
-    def get_network_info(self):
-        self.logger.info("Getting network info.")
-        conn = wmi.WMI()
-        interfaces = conn.Win32_NetworkAdapterConfiguration()
-        network_info = []
-        for interface in interfaces:
-            if interface.IPEnabled:
-                network_info.append(
-                    {
-                        "name": interface.Description,
-                        "ip": interface.IPAddress[0],
-                        "mac": interface.MACAddress,
-                    }
-                )
-        return network_info
-
-    def get_disk_info(self):
-        self.logger.info("Getting boot disk caption.")
-        command = "wmic bootconfig get caption"
-        stdoutdata, stderrdata = subprocess.Popen(
-            command, stdout=subprocess.PIPE
-        ).communicate()
-        out = stdoutdata.decode().replace("\r", "")
-        pattern = re.compile(
-            r"\\Device\\Harddisk(?P<harddisk>[\d])+\\Partition(?P<partition>[\d])+"
-        )
-        result = pattern.search(out)
-        disk_index = int(result.group("harddisk"))
-
-        self.logger.info("Getting boot disk serial number.")
-        conn = wmi.WMI()
-        for disk in conn.Win32_DiskDrive(["DeviceID", "Index", "SerialNumber"]):
-            if disk.Index == disk_index:
-                disk_info = {
-                    "device_id": disk.DeviceID,
-                    "index": disk.Index,
-                    "serial_number": disk.SerialNumber,
+def get_network_info():
+    logger.info("Getting network info.")
+    conn = wmi.WMI()
+    interfaces = conn.Win32_NetworkAdapterConfiguration()
+    network_info = []
+    for interface in interfaces:
+        if interface.IPEnabled:
+            network_info.append(
+                {
+                    "name": interface.Description,
+                    "ip": interface.IPAddress[0],
+                    "mac": interface.MACAddress,
                 }
-                return disk_info
-        return None
+            )
+    return network_info
+
+
+def get_disk_info():
+    logger.info("Getting boot disk caption.")
+    command = "wmic bootconfig get caption"
+    stdoutdata, stderrdata = subprocess.Popen(
+        command, stdout=subprocess.PIPE
+    ).communicate()
+    out = stdoutdata.decode().replace("\r", "")
+    pattern = re.compile(
+        r"\\Device\\Harddisk(?P<harddisk>[\d])+\\Partition(?P<partition>[\d])+"
+    )
+    result = pattern.search(out)
+    disk_index = int(result.group("harddisk"))
+
+    logger.info("Getting boot disk serial number.")
+    conn = wmi.WMI()
+    for disk in conn.Win32_DiskDrive(["DeviceID", "Index", "SerialNumber"]):
+        if disk.Index == disk_index:
+            disk_info = {
+                "device_id": disk.DeviceID,
+                "index": disk.Index,
+                "serial_number": disk.SerialNumber,
+            }
+            return disk_info
+    return None

@@ -57,14 +57,13 @@ class App:
     def get_info(self):
         if self.my_system == "Linux":
             # local library
-            from linux.system_info import SystemInfo
+            from linux import system_info
         else:
             # local library
-            from windows.system_info import SystemInfo
+            from windows import system_info
 
-        sys_info = SystemInfo()
-        network_info = sys_info.get_network_info()
-        disk_info = sys_info.get_disk_info()
+        network_info = system_info.get_network_info()
+        disk_info = system_info.get_disk_info()
         system_info = {"network": network_info, "boot_disk": disk_info}
         return system_info
 
