@@ -14,8 +14,10 @@
 
 # standard library
 import json
+import logging
 import sys
 from datetime import datetime as dt
+from logging.config import fileConfig
 from pathlib import Path
 from platform import system
 
@@ -27,12 +29,18 @@ class App:
         file = Path(__file__)
         project = file.parent
         output = project / "output"
+        log = output / "log"
+        logging_conf = project / "configuration.ini"
         self.data_file = output / "system_info.json"
 
-        # create output directory
-        if not Path.exists(output):
-            Path.mkdir(output)
+        # create output and log directory
+        if not Path.exists(log):
+            Path.mkdir(log, parents=True)
 
+        fileConfig(logging_conf)
+        self.logger = logging.getLogger()
+
+        self.logger.info("Determining Operating System.")
         my_system = system()
         if my_system == "Linux":
             self.my_system = "Linux"
@@ -42,7 +50,8 @@ class App:
             sys.stderr.write(
                 f"This program only supports Linux and Windows, not '{my_system}'."
             )
-            # sys.exit()
+            self.logger.error(f"Unsupported system: {my_system}")
+            sys.exit()
 
     def get_info(self):
         if self.my_system == "Linux":
@@ -89,6 +98,7 @@ class App:
         data = system_info.copy()
         data.update({"creation_time": now, "os": self.my_system})
         json_data = json.dumps(data)
+        self.logger.info("Saving info to file.")
         with open(self.data_file, "wt", encoding="utf-8") as fout:
             fout.write(json_data)
 

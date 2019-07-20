@@ -14,6 +14,7 @@
 
 # standard library
 import fcntl
+import logging
 import re
 import shlex
 import struct
@@ -24,8 +25,11 @@ import netifaces as ni
 
 
 class SystemInfo:
-    @staticmethod
-    def get_network_info():
+    def __init__(self):
+        self.logger = logging.getLogger(__name__)
+
+    def get_network_info(self):
+        self.logger.info("Getting network info.")
         interfaces = ni.interfaces()
         network_info = []
         for interface in interfaces:
@@ -35,14 +39,15 @@ class SystemInfo:
             network_info.append({"name": interface, "ip": ip, "mac": mac})
         return network_info
 
-    @staticmethod
-    def get_disk_info():
+    def get_disk_info(self):
+        self.logger.info("Getting boot disk mount.")
         out = subprocess.Popen(
             shlex.split("df /"), stdout=subprocess.PIPE
         ).communicate()
         m = re.search(r"(/[^\s]+)\s", str(out))
         mount_point = m.group(1)
 
+        self.logger.info("Getting boot disk serial number.")
         with open(mount_point, "rb") as fd:
             # tediously derived from the monster struct defined in <hdreg.h>
             # see comment at end of file to verify

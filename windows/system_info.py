@@ -13,6 +13,7 @@
 # limitations under the License.
 
 # standard library
+import logging
 import re
 import subprocess
 
@@ -21,8 +22,11 @@ import wmi
 
 
 class SystemInfo:
-    @staticmethod
-    def get_network_info():
+    def __init__(self):
+        self.logger = logging.getLogger(__name__)
+
+    def get_network_info(self):
+        self.logger.info("Getting network info.")
         conn = wmi.WMI()
         interfaces = conn.Win32_NetworkAdapterConfiguration()
         network_info = []
@@ -37,8 +41,8 @@ class SystemInfo:
                 )
         return network_info
 
-    @staticmethod
-    def get_disk_info():
+    def get_disk_info(self):
+        self.logger.info("Getting boot disk caption.")
         command = "wmic bootconfig get caption"
         stdoutdata, stderrdata = subprocess.Popen(
             command, stdout=subprocess.PIPE
@@ -50,6 +54,7 @@ class SystemInfo:
         result = pattern.search(out)
         disk_index = int(result.group("harddisk"))
 
+        self.logger.info("Getting boot disk serial number.")
         conn = wmi.WMI()
         for disk in conn.Win32_DiskDrive(["DeviceID", "Index", "SerialNumber"]):
             if disk.Index == disk_index:
