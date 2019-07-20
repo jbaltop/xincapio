@@ -72,7 +72,12 @@ class App:
         network_info = system_info.get_network_info()
         disk_info = system_info.get_disk_info()
         now = dt.utcnow().strftime(self.utc_datetime_fmt)
-        system_info = {"os": self.my_system, "creation_time": now, "network": network_info, "boot_disk": disk_info}
+        system_info = {
+            "os": self.my_system,
+            "creation_time": now,
+            "network": network_info,
+            "boot_disk": disk_info,
+        }
         return system_info
 
     def save_info(self, system_info):
