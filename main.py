@@ -23,6 +23,7 @@ from pathlib import Path
 from platform import system
 
 # third party library
+import click
 import wx
 
 # local library
@@ -109,19 +110,22 @@ def _prettify_message(system_info):
     return message
 
 
-def main():
+@click.command()
+@click.option("--gui", "/gui", is_flag=True, help="Use gui version.")
+def main(gui):
     my_app = App()
     system_info = my_app.get_info()
     pretty_message = _prettify_message(system_info)
-    print(pretty_message)
     my_app.save_info(system_info)
 
-    # gui
-    gui_app = wx.App()
-    frame = MyFrame(None, title="System Info", size=(640, 480))
-    frame.show_text(pretty_message)
-    frame.Show()
-    gui_app.MainLoop()
+    if gui:
+        gui_app = wx.App()
+        frame = MyFrame(None, title="System Info", size=(640, 480))
+        frame.show_text(pretty_message)
+        frame.Show()
+        gui_app.MainLoop()
+    else:
+        print(pretty_message)
 
 
 if __name__ == "__main__":
