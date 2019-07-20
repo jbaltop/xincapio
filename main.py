@@ -39,7 +39,7 @@ class App:
             Path.mkdir(log, parents=True)
 
         fileConfig(logging_conf)
-        self.logger = logging.getLogger()
+        self.logger = logging.getLogger(__name__)
         logging.Formatter.converter = time.gmtime
 
         self.logger.info("Determining Operating System.")
@@ -49,10 +49,9 @@ class App:
         elif my_system == "Windows":
             self.my_system = "Windows"
         else:
-            sys.stderr.write(
+            self.logger.error(
                 f"This program only supports Linux and Windows, not '{my_system}'."
             )
-            self.logger.error(f"Unsupported system: {my_system}")
             sys.exit()
 
     def get_info(self):

@@ -40,7 +40,7 @@ class SystemInfo:
         return network_info
 
     def get_disk_info(self):
-        self.logger.info("Getting boot disk mount.")
+        self.logger.info("Getting boot disk mount point.")
         out = subprocess.Popen(
             shlex.split("df /"), stdout=subprocess.PIPE
         ).communicate()
