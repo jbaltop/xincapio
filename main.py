@@ -22,6 +22,12 @@ from logging.config import fileConfig
 from pathlib import Path
 from platform import system
 
+# third party library
+import wx
+
+# local library
+from my_frame import MyFrame
+
 
 class App:
     def __init__(self):
@@ -64,50 +70,58 @@ class App:
 
         network_info = system_info.get_network_info()
         disk_info = system_info.get_disk_info()
-        system_info = {"network": network_info, "boot_disk": disk_info}
+        now = dt.utcnow().strftime(self.utc_datetime_fmt)
+        system_info = {"os": self.my_system, "creation_time": now, "network": network_info, "boot_disk": disk_info}
         return system_info
 
-    def show_info(self, system_info):
-        # print(system_info)
-        networks = system_info["network"]
-        boot_disk = system_info["boot_disk"]
-
-        print("NETWORK\n")
-        for network in networks:
-            print(
-                f"Name: {network['name']}\n"
-                f"IP: {network['ip']}\n"
-                f"MAC: {network['mac']}\n"
-            )
-
-        print("BOOT DISK\n")
-        if self.my_system == "Linux":
-            print(
-                f"Mount Point: {boot_disk['mount_point']}\n"
-                f"Serial Number: {boot_disk['serial_number']}\n"
-            )
-        else:
-            print(
-                f"Device ID: {boot_disk['device_id']}\n"
-                f"Index: {boot_disk['index']}\n"
-                f"Serial Number: {boot_disk['serial_number']}\n"
-            )
-
     def save_info(self, system_info):
-        now = dt.utcnow().strftime(self.utc_datetime_fmt)
-        data = system_info.copy()
-        data.update({"creation_time": now, "os": self.my_system})
-        json_data = json.dumps(data)
+        json_data = json.dumps(system_info)
         self.logger.info("Saving info to file.")
         with open(self.data_file, "wt", encoding="utf-8") as fout:
             fout.write(json_data)
 
 
+def _prettify_message(system_info):
+    os = system_info["os"]
+    networks = system_info["network"]
+    boot_disk = system_info["boot_disk"]
+    message = ""
+
+    message += "NETWORK\n\n"
+    for network in networks:
+        message += (
+            f"Name: {network['name']}\n"
+            f"IP: {network['ip']}\n"
+            f"MAC: {network['mac']}\n\n"
+        )
+    message += "\nBOOT DISK\n\n"
+    if os == "Linux":
+        message += (
+            f"Mount Point: {boot_disk['mount_point']}\n"
+            f"Serial Number: {boot_disk['serial_number']}\n"
+        )
+    else:
+        message += (
+            f"Device ID: {boot_disk['device_id']}\n"
+            f"Index: {boot_disk['index']}\n"
+            f"Serial Number: {boot_disk['serial_number']}\n"
+        )
+    return message
+
+
 def main():
     my_app = App()
     system_info = my_app.get_info()
-    my_app.show_info(system_info)
+    pretty_message = _prettify_message(system_info)
+    print(pretty_message)
     my_app.save_info(system_info)
+
+    # gui
+    gui_app = wx.App()
+    frame = MyFrame(None, title="System Info", size=(640, 480))
+    frame.show_text(pretty_message)
+    frame.Show()
+    gui_app.MainLoop()
 
 
 if __name__ == "__main__":
