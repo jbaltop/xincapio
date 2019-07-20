@@ -16,6 +16,7 @@
 import json
 import logging
 import sys
+import time
 from datetime import datetime as dt
 from logging.config import fileConfig
 from pathlib import Path
@@ -39,6 +40,7 @@ class App:
 
         fileConfig(logging_conf)
         self.logger = logging.getLogger()
+        logging.Formatter.converter = time.gmtime
 
         self.logger.info("Determining Operating System.")
         my_system = system()
