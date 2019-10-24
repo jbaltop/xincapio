@@ -39,7 +39,7 @@ class App:
         output = project / "output"
         log = output / "log"
         logging_conf = project / "configuration.ini"
-        self.data_file = output / "system_info.json"
+        self.data_file = output / "system-info.json"
 
         # create output and log directory
         if not Path.exists(log):
@@ -120,17 +120,16 @@ def _prettify_message(system_info):
 def main(gui):
     my_app = App()
     system_info = my_app.get_info()
-    pretty_message = _prettify_message(system_info)
-    my_app.save_info(system_info)
 
     if gui:
         gui_app = wx.App()
-        frame = MyFrame(None, title="System Info", size=(640, 480))
-        frame.show_text(pretty_message)
-        frame.Show()
+        MyFrame(None, "System Information", system_info)
         gui_app.MainLoop()
     else:
+        pretty_message = _prettify_message(system_info)
         print(pretty_message)
+
+    my_app.save_info(system_info)
 
 
 if __name__ == "__main__":
