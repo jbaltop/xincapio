@@ -43,6 +43,11 @@ class MyWidget(QtWidgets.QMainWindow):
         refresh_button.triggered.connect(self.init_ui)
         file_menu.addAction(refresh_button)
 
+        exit_button = QtWidgets.QAction(QtGui.QIcon(), "Exit", self)
+        exit_button.setShortcut("Ctrl+Q")
+        exit_button.triggered.connect(QtWidgets.qApp.quit)
+        file_menu.addAction(exit_button)
+
         self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
 
