@@ -13,11 +13,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+# standard library
+from datetime import datetime as dt
+
 # third party library
+from dateutil import tz
 from PyQt5 import QtWidgets, QtGui
 
 
 class Style:
+    utc_datetime_fmt = "%Y-%m-%dT%H:%M:%S.%fZ"
+    local_datetime_fmt = "%Y-%m-%d %H:%M:%S.%f"
+
     default_font = 10
     h1_font = 18
 
@@ -411,10 +418,22 @@ class MyWidget(QtWidgets.QMainWindow):
         self.grid.addItem(blank_space, i, 1)
         i += 1
 
-        message = "Updated at " + self.system_info["creation_time"]
+        local_time = _convert_timezone(self.system_info["creation_time"])
+        message = "Updated at " + str(local_time)
         self.statusBar().showMessage(message)
 
         i += 1
         self.grid.setColumnStretch(0, 1)
         self.grid.setColumnStretch(8, 1)
         self.grid.setRowStretch(i, 1)
+
+
+def _convert_timezone(from_time):
+    from_zone = tz.tzutc()
+    to_zone = tz.tzlocal()
+
+    from_time = dt.strptime(from_time, Style.utc_datetime_fmt)
+    from_time = from_time.replace(tzinfo=from_zone)
+    to_time = from_time.astimezone(to_zone)
+    to_time = to_time.strftime(Style.local_datetime_fmt)
+    return to_time

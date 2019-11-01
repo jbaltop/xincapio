@@ -28,13 +28,11 @@ import click
 from PyQt5 import QtWidgets
 
 # local library
-from my_widget import MyWidget
+from my_widget import MyWidget, Style
 
 
 class App:
     def __init__(self):
-        self.utc_datetime_fmt = "%Y-%m-%dT%H:%M:%S.%fZ"
-
         file = Path(__file__)
         project = file.parent
         output = project / "output"
@@ -72,7 +70,7 @@ class App:
 
         network_info = system_info.get_network_info()
         disk_info = system_info.get_disk_info()
-        now = dt.utcnow().strftime(self.utc_datetime_fmt)
+        now = dt.utcnow().strftime(Style.utc_datetime_fmt)
         system_info = {
             "os": self.my_system,
             "creation_time": now,
