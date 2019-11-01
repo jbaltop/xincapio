@@ -55,6 +55,17 @@ class MyWidget(QtWidgets.QMainWindow):
         self.layout.addWidget(self.scroll)
         self.grid.setSpacing(0)
 
+        self.default_font = QtGui.QFont()
+        self.default_font.setPointSize(Style.default_font)
+
+        self.h1_font = QtGui.QFont()
+        self.h1_font.setPointSize(Style.h1_font)
+        self.h1_font.setBold(True)
+
+        self.default_font.setPointSize(Style.default_font)
+        self.key_font = QtGui.QFont()
+        self.key_font.setBold(True)
+
         self.centralWidget().setLayout(self.layout)
 
         self.init_ui()
@@ -65,17 +76,6 @@ class MyWidget(QtWidgets.QMainWindow):
         self.my_app.save_info(self.system_info)
 
     def show_info(self):
-        default_font = QtGui.QFont()
-        default_font.setPointSize(Style.default_font)
-
-        h1_font = QtGui.QFont()
-        h1_font.setPointSize(Style.h1_font)
-        h1_font.setBold(True)
-
-        key_font = QtGui.QFont()
-        default_font.setPointSize(Style.default_font)
-        key_font.setBold(True)
-
         if self.grid.count():
             for index in reversed(range(self.grid.count())):
                 widget_to_remove = self.grid.itemAt(index).widget()
@@ -104,7 +104,7 @@ class MyWidget(QtWidgets.QMainWindow):
         self.grid.addItem(blank_space, i, 1)
 
         label = QtWidgets.QLabel("Network")
-        label.setFont(h1_font)
+        label.setFont(self.h1_font)
         self.grid.addWidget(label, i, 2, 3, 1)
 
         blank_space = QtWidgets.QSpacerItem(
@@ -117,7 +117,7 @@ class MyWidget(QtWidgets.QMainWindow):
 
         for network in self.system_info["network"]:
             label = QtWidgets.QLabel("Name")
-            label.setFont(key_font)
+            label.setFont(self.key_font)
             self.grid.addWidget(label, i, 4)
 
             blank_space = QtWidgets.QSpacerItem(
@@ -150,7 +150,7 @@ class MyWidget(QtWidgets.QMainWindow):
             i += 1
 
             label = QtWidgets.QLabel("IP")
-            label.setFont(key_font)
+            label.setFont(self.key_font)
             self.grid.addWidget(label, i, 4)
 
             blank_space = QtWidgets.QSpacerItem(
@@ -183,7 +183,7 @@ class MyWidget(QtWidgets.QMainWindow):
             i += 1
 
             label = QtWidgets.QLabel("MAC")
-            label.setFont(key_font)
+            label.setFont(self.key_font)
             self.grid.addWidget(label, i, 4)
 
             blank_space = QtWidgets.QSpacerItem(
@@ -239,7 +239,7 @@ class MyWidget(QtWidgets.QMainWindow):
         self.grid.addItem(blank_space, i, 1)
 
         label = QtWidgets.QLabel("Boot Disk")
-        label.setFont(h1_font)
+        label.setFont(self.h1_font)
         self.grid.addWidget(label, i, 2, 3, 1)
 
         blank_space = QtWidgets.QSpacerItem(
@@ -252,7 +252,7 @@ class MyWidget(QtWidgets.QMainWindow):
 
         if self.system_info["os"] == "Linux":
             label = QtWidgets.QLabel("Mount Point")
-            label.setFont(key_font)
+            label.setFont(self.key_font)
             self.grid.addWidget(label, i, 4)
 
             blank_space = QtWidgets.QSpacerItem(
@@ -287,7 +287,7 @@ class MyWidget(QtWidgets.QMainWindow):
             i += 1
 
             label = QtWidgets.QLabel("Serial Number")
-            label.setFont(key_font)
+            label.setFont(self.key_font)
             self.grid.addWidget(label, i, 4)
 
             blank_space = QtWidgets.QSpacerItem(
@@ -305,7 +305,7 @@ class MyWidget(QtWidgets.QMainWindow):
 
         else:
             label = QtWidgets.QLabel("Device ID")
-            label.setFont(key_font)
+            label.setFont(self.key_font)
             self.grid.addWidget(label, i, 4)
 
             blank_space = QtWidgets.QSpacerItem(
@@ -338,7 +338,7 @@ class MyWidget(QtWidgets.QMainWindow):
             i += 1
 
             label = QtWidgets.QLabel("Index")
-            label.setFont(key_font)
+            label.setFont(self.key_font)
             self.grid.addWidget(label, i, 4)
 
             blank_space = QtWidgets.QSpacerItem(
@@ -373,7 +373,7 @@ class MyWidget(QtWidgets.QMainWindow):
             i += 1
 
             label = QtWidgets.QLabel("Serial Number")
-            label.setFont(key_font)
+            label.setFont(self.key_font)
             self.grid.addWidget(label, i, 4)
 
             blank_space = QtWidgets.QSpacerItem(
