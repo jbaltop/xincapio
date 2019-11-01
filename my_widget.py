@@ -406,8 +406,11 @@ class MyWidget(QtWidgets.QMainWindow):
         self.grid.addItem(blank_space, i, 1)
         i += 1
 
-        label = QtWidgets.QLabel(self.system_info["creation_time"])
-        self.grid.addWidget(label, i, 4)
+        message = (
+            "Updated at "
+            + self.system_info["creation_time"]
+        )
+        self.statusBar().showMessage(message)
 
         i += 1
         self.grid.setColumnStretch(0, 1)
