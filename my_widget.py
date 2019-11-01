@@ -27,11 +27,24 @@ class Style:
     section_border = 25
 
 
-class MyWidget(QtWidgets.QWidget):
+class MyWidget(QtWidgets.QMainWindow):
     def __init__(self, my_app):
         super().__init__()
         self.my_app = my_app
-        self.system_info = self.my_app.get_info()
+
+        self.setWindowTitle("System Information")
+        self.resize(900, 600)
+        self.show()
+
+        menubar = self.menuBar()
+        file_menu = menubar.addMenu("&File")
+        refresh_button = QtWidgets.QAction(QtGui.QIcon(), "Refresh", self)
+        refresh_button.setShortcut("Ctrl+R")
+        refresh_button.triggered.connect(self.init_ui)
+        file_menu.addAction(refresh_button)
+
+        self.central_widget = QtWidgets.QWidget()
+        self.setCentralWidget(self.central_widget)
 
         self.layout = QtWidgets.QHBoxLayout(self)
         self.scroll = QtWidgets.QScrollArea(self)
@@ -42,11 +55,13 @@ class MyWidget(QtWidgets.QWidget):
         self.layout.addWidget(self.scroll)
         self.grid.setSpacing(0)
 
-        self.setWindowTitle("System Information")
-        self.resize(900, 600)
-        self.show_info()
-        self.show()
+        self.centralWidget().setLayout(self.layout)
 
+        self.init_ui()
+
+    def init_ui(self):
+        self.system_info = self.my_app.get_info()
+        self.show_info()
         self.my_app.save_info(self.system_info)
 
     def show_info(self):
@@ -60,6 +75,15 @@ class MyWidget(QtWidgets.QWidget):
         key_font = QtGui.QFont()
         default_font.setPointSize(Style.default_font)
         key_font.setBold(True)
+
+        if self.grid.count():
+            for index in reversed(range(self.grid.count())):
+                widget_to_remove = self.grid.itemAt(index).widget()
+                if widget_to_remove:
+                    self.grid.removeWidget(widget_to_remove)
+                    widget_to_remove.setParent(None)
+                else:
+                    self.grid.removeItem(self.grid.itemAt(index))
 
         i = 0
         blank_space = QtWidgets.QSpacerItem(
@@ -380,6 +404,10 @@ class MyWidget(QtWidgets.QWidget):
             QtWidgets.QSizePolicy.Minimum,
         )
         self.grid.addItem(blank_space, i, 1)
+        i += 1
+
+        label = QtWidgets.QLabel(self.system_info["creation_time"])
+        self.grid.addWidget(label, i, 4)
 
         i += 1
         self.grid.setColumnStretch(0, 1)
