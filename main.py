@@ -1,11 +1,13 @@
 # Copyright (C) 2019 Hajun Park
 #
-# This program is free software: you can redistribute it and/or modify
+# This file is part of System Information
+#
+# System Information is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# This program is distributed in the hope that it will be useful,
+# System Information is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
@@ -77,28 +79,46 @@ class App:
             fout.write(json_data)
 
 
-def _create_output_dir():
+def get_path():
+    # project
     file = Path(__file__)
     project = file.parent
+
+    # directory
     output = project / "output"
     log = output / "log"
+
+    # existing file
     logging_conf = project / "configuration.ini"
+    version = project / "version.txt"
+    license = project / "LICENSE"
+
+    # output file
     data_file = output / "system-info.json"
 
-    paths = {"logging_conf": logging_conf, "data_file": data_file}
-
-    # create output and log directory
-    if not Path.exists(log):
-        Path.mkdir(log, parents=True)
+    paths = {"logging_conf": logging_conf, "data_file": data_file, "version": version, "log": log, "license": license}
 
     return paths
 
 
+def create_output_dir(paths):
+    if not Path(paths["log"]).exists():
+        Path.mkdir(paths["log"], parents=True)
+
+
 @click.command()
 @click.option("--gui", "/gui", is_flag=True, help="Use gui version.")
-@click.option("--output", "/output", help="Path to output file.")
-def main(gui, output):
-    paths = _create_output_dir()
+@click.option("--output", "/output", help="Specify path to output file.")
+@click.option("--version", "/version", is_flag=True, help="Show version.")
+def main(gui, output, version):
+    paths = get_path()
+
+    if version:
+        with open(paths["version"], encoding="utf-8") as fin:
+            print(fin.read()[:-1])
+        return
+
+    create_output_dir(paths)
     my_app = App(paths)
 
     if gui:
