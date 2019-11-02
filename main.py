@@ -96,7 +96,13 @@ def get_path():
     # output file
     data_file = output / "system-info.json"
 
-    paths = {"logging_conf": logging_conf, "data_file": data_file, "version": version, "log": log, "license": license}
+    paths = {
+        "data_file": data_file,
+        "license": license,
+        "log": log,
+        "logging_conf": logging_conf,
+        "version": version,
+    }
 
     return paths
 

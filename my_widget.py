@@ -517,7 +517,12 @@ class AboutDialog(QtWidgets.QDialog):
         self.grid.addWidget(label, i, 1)
         i += 1
 
-        blank_space = QtWidgets.QSpacerItem(0, Style.section_border, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        blank_space = QtWidgets.QSpacerItem(
+            0,
+            Style.section_border,
+            QtWidgets.QSizePolicy.Minimum,
+            QtWidgets.QSizePolicy.Minimum,
+        )
         self.grid.addItem(blank_space, i, 1)
         i += 1
 
@@ -528,7 +533,12 @@ class AboutDialog(QtWidgets.QDialog):
         self.grid.addWidget(label, i, 1)
         i += 1
 
-        blank_space = QtWidgets.QSpacerItem(0, Style.section_border, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        blank_space = QtWidgets.QSpacerItem(
+            0,
+            Style.section_border,
+            QtWidgets.QSizePolicy.Minimum,
+            QtWidgets.QSizePolicy.Minimum,
+        )
         self.grid.addItem(blank_space, i, 1)
         i += 1
 
@@ -538,7 +548,12 @@ class AboutDialog(QtWidgets.QDialog):
         self.grid.addWidget(hline, i, 1)
         i += 1
 
-        blank_space = QtWidgets.QSpacerItem(0, Style.section_border, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        blank_space = QtWidgets.QSpacerItem(
+            0,
+            Style.section_border,
+            QtWidgets.QSizePolicy.Minimum,
+            QtWidgets.QSizePolicy.Minimum,
+        )
         self.grid.addItem(blank_space, i, 1)
         i += 1
 
@@ -547,7 +562,12 @@ class AboutDialog(QtWidgets.QDialog):
         self.grid.addWidget(label, i, 1)
         i += 1
 
-        blank_space = QtWidgets.QSpacerItem(0, Style.section_border, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        blank_space = QtWidgets.QSpacerItem(
+            0,
+            Style.section_border,
+            QtWidgets.QSizePolicy.Minimum,
+            QtWidgets.QSizePolicy.Minimum,
+        )
         self.grid.addItem(blank_space, i, 1)
         i += 1
 
