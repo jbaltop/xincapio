@@ -35,10 +35,10 @@ class Style:
 
 
 class MyWidget(QtWidgets.QMainWindow):
-    def __init__(self, my_app, paths):
+    def __init__(self, my_app):
         super().__init__()
         self.my_app = my_app
-        self.paths = paths
+        self.paths = self.my_app.paths
 
         self.setWindowTitle("System Information")
         self.resize(900, 600)
