@@ -1,2 +1,3 @@
-wxPython
 click
+python-dateutil
+PyQt5

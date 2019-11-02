@@ -28,23 +28,14 @@ import click
 from PyQt5 import QtWidgets
 
 # local library
+from console_app import ConsoleApp
 from my_widget import MyWidget, Style
 
 
 class App:
-    def __init__(self):
-        file = Path(__file__)
-        project = file.parent
-        output = project / "output"
-        log = output / "log"
-        logging_conf = project / "configuration.ini"
-        self.data_file = output / "system-info.json"
-
-        # create output and log directory
-        if not Path.exists(log):
-            Path.mkdir(log, parents=True)
-
-        fileConfig(logging_conf)
+    def __init__(self, paths):
+        self.paths = paths
+        fileConfig(self.paths["logging_conf"])
         self.logger = logging.getLogger(__name__)
         logging.Formatter.converter = time.gmtime
 
@@ -79,56 +70,44 @@ class App:
         }
         return system_info
 
-    def save_info(self, system_info):
+    def save_info(self, system_info, path):
         json_data = json.dumps(system_info)
         self.logger.info("Saving info to file.")
-        with open(self.data_file, "wt", encoding="utf-8") as fout:
+        with open(path, "wt", encoding="utf-8") as fout:
             fout.write(json_data)
 
 
-def _prettify_message(system_info):
-    os = system_info["os"]
-    networks = system_info["network"]
-    boot_disk = system_info["boot_disk"]
-    message = ""
+def _create_output_dir():
+    file = Path(__file__)
+    project = file.parent
+    output = project / "output"
+    log = output / "log"
+    logging_conf = project / "configuration.ini"
+    data_file = output / "system-info.json"
 
-    message += "NETWORK\n\n"
-    for network in networks:
-        message += (
-            f"Name: {network['name']}\n"
-            f"IP: {network['ip']}\n"
-            f"MAC: {network['mac']}\n\n"
-        )
-    message += "\nBOOT DISK\n\n"
-    if os == "Linux":
-        message += (
-            f"Mount Point: {boot_disk['mount_point']}\n"
-            f"Serial Number: {boot_disk['serial_number']}\n"
-        )
-    else:
-        message += (
-            f"Device ID: {boot_disk['device_id']}\n"
-            f"Index: {boot_disk['index']}\n"
-            f"Serial Number: {boot_disk['serial_number']}\n"
-        )
-    return message
+    paths = {"logging_conf": logging_conf, "data_file": data_file}
+
+    # create output and log directory
+    if not Path.exists(log):
+        Path.mkdir(log, parents=True)
+
+    return paths
 
 
 @click.command()
 @click.option("--gui", "/gui", is_flag=True, help="Use gui version.")
-def main(gui):
-    my_app = App()
-    system_info = my_app.get_info()
+@click.option("--output", "/output", help="Path to output file.")
+def main(gui, output):
+    paths = _create_output_dir()
+    my_app = App(paths)
 
     if gui:
         gui_app = QtWidgets.QApplication([])
         widget = MyWidget(my_app)
         gui_app.exec_()
     else:
-        pretty_message = _prettify_message(system_info)
-        print(pretty_message)
-
-    my_app.save_info(system_info)
+        console_app = ConsoleApp(my_app, output)
+        console_app.run()
 
 
 if __name__ == "__main__":

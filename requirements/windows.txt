@@ -1,2 +1,2 @@
-wmi
 pypiwin32
+wmi

@@ -38,6 +38,7 @@ class MyWidget(QtWidgets.QMainWindow):
     def __init__(self, my_app):
         super().__init__()
         self.my_app = my_app
+        self.paths = self.my_app.paths
 
         self.setWindowTitle("System Information")
         self.resize(900, 600)
@@ -45,6 +46,12 @@ class MyWidget(QtWidgets.QMainWindow):
 
         menubar = self.menuBar()
         file_menu = menubar.addMenu("&File")
+
+        save_button = QtWidgets.QAction(QtGui.QIcon(), "Save", self)
+        save_button.setShortcut("Ctrl+S")
+        save_button.triggered.connect(self.on_save)
+        file_menu.addAction(save_button)
+
         refresh_button = QtWidgets.QAction(QtGui.QIcon(), "Refresh", self)
         refresh_button.setShortcut("Ctrl+R")
         refresh_button.triggered.connect(self.init_ui)
@@ -85,7 +92,7 @@ class MyWidget(QtWidgets.QMainWindow):
     def init_ui(self):
         self.system_info = self.my_app.get_info()
         self.show_info()
-        self.my_app.save_info(self.system_info)
+        self.my_app.save_info(self.system_info, self.paths["data_file"])
 
     def show_info(self):
         if self.grid.count():
@@ -426,6 +433,17 @@ class MyWidget(QtWidgets.QMainWindow):
         self.grid.setColumnStretch(0, 1)
         self.grid.setColumnStretch(8, 1)
         self.grid.setRowStretch(i, 1)
+
+    def on_save(self):
+        output_file = QtWidgets.QFileDialog.getSaveFileName(
+            self,
+            filter="All Files (*);;JSON (*.json)",
+            initialFilter="JSON (*.json)",
+            directory="/",
+        )
+        output_path, file_type = output_file
+        if output_path != "":
+            self.my_app.save_info(self.system_info, output_path)
 
 
 def _convert_timezone(from_time):
