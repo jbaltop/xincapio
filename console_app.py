@@ -65,7 +65,9 @@ class ConsoleApp:
             self.my_app.save_info(self.system_info, self.paths["data_file"])
 
     def path_exists(self, output_path):
-        overwrite = input(f"'{output_path}' already exsists. Do you want to overwrite [y/N]? ")
+        overwrite = input(
+            f"'{output_path}' already exsists. Do you want to overwrite [y/N]? "
+        )
         if overwrite == "y":
             self.my_app.save_info(self.system_info, output_path)
         else:

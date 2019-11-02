@@ -435,7 +435,12 @@ class MyWidget(QtWidgets.QMainWindow):
         self.grid.setRowStretch(i, 1)
 
     def on_save(self):
-        output_file = QtWidgets.QFileDialog.getSaveFileName(self, filter="All Files (*);;JSON (*.json)", initialFilter="JSON (*.json)", directory="/")
+        output_file = QtWidgets.QFileDialog.getSaveFileName(
+            self,
+            filter="All Files (*);;JSON (*.json)",
+            initialFilter="JSON (*.json)",
+            directory="/",
+        )
         output_path, file_type = output_file
         if output_path != "":
             self.my_app.save_info(self.system_info, output_path)

@@ -85,10 +85,7 @@ def _create_output_dir():
     logging_conf = project / "configuration.ini"
     data_file = output / "system-info.json"
 
-    paths = {
-        "logging_conf": logging_conf,
-        "data_file": data_file,
-    }
+    paths = {"logging_conf": logging_conf, "data_file": data_file}
 
     # create output and log directory
     if not Path.exists(log):
