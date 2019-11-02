@@ -32,18 +32,7 @@ from my_widget import MyWidget, Style
 
 
 class App:
-    def __init__(self):
-        file = Path(__file__)
-        project = file.parent
-        output = project / "output"
-        log = output / "log"
-        logging_conf = project / "configuration.ini"
-        self.data_file = output / "system-info.json"
-
-        # create output and log directory
-        if not Path.exists(log):
-            Path.mkdir(log, parents=True)
-
+    def __init__(self, logging_conf):
         fileConfig(logging_conf)
         self.logger = logging.getLogger(__name__)
         logging.Formatter.converter = time.gmtime
@@ -79,11 +68,31 @@ class App:
         }
         return system_info
 
-    def save_info(self, system_info):
+    def save_info(self, system_info, path):
         json_data = json.dumps(system_info)
         self.logger.info("Saving info to file.")
-        with open(self.data_file, "wt", encoding="utf-8") as fout:
+        with open(path, "wt", encoding="utf-8") as fout:
             fout.write(json_data)
+
+
+def _create_output_dir():
+    file = Path(__file__)
+    project = file.parent
+    output = project / "output"
+    log = output / "log"
+    logging_conf = project / "configuration.ini"
+    data_file = output / "system-info.json"
+
+    paths = {
+        "logging_conf": logging_conf,
+        "data_file": data_file,
+    }
+
+    # create output and log directory
+    if not Path.exists(log):
+        Path.mkdir(log, parents=True)
+
+    return paths
 
 
 def _prettify_message(system_info):
@@ -117,18 +126,19 @@ def _prettify_message(system_info):
 @click.command()
 @click.option("--gui", "/gui", is_flag=True, help="Use gui version.")
 def main(gui):
-    my_app = App()
+    paths = _create_output_dir()
+    my_app = App(paths["logging_conf"])
     system_info = my_app.get_info()
 
     if gui:
         gui_app = QtWidgets.QApplication([])
-        widget = MyWidget(my_app)
+        widget = MyWidget(my_app, paths)
         gui_app.exec_()
     else:
         pretty_message = _prettify_message(system_info)
         print(pretty_message)
 
-    my_app.save_info(system_info)
+    my_app.save_info(system_info, paths["data_file"])
 
 
 if __name__ == "__main__":
