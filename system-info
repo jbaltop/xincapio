@@ -1,0 +1,5 @@
+#!/bin/bash
+
+INSTALL_DIR="$HOME/.local/share/System Information"
+
+sudo "$INSTALL_DIR/main/main" --gui

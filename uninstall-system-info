@@ -1,0 +1,13 @@
+#!/bin/bash
+
+INSTALL_DIR="$HOME/.local/share/System Information"
+
+rm --recursive "$INSTALL_DIR"
+
+# create backup
+mv ~/.bashrc ~/.bashrc.bak
+
+sed '/^# systemInfoStart$/,/^# systemInfoEnd$/d' ~/.bashrc.bak > ~/.bashrc
+
+# remove backup
+# rm ~/.bashrc.bak

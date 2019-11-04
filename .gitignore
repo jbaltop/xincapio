@@ -4,6 +4,10 @@ __pycache__/
 # ide, editor
 .idea/
 
+# pyinstaller
+build/
+dist/
+
 # others
 private/
 output/
