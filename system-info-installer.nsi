@@ -29,6 +29,6 @@ Delete $INSTDIR\*
 RMDir /r $INSTDIR\Include
 RMDir /r $INSTDIR\PyQt5
 RMDir /r $INSTDIR\win32com
-RMDir /r "$SMPROGRAMS\Sample App"
+RMDir /r "$SMPROGRAMS\System Information"
 
 SectionEnd
