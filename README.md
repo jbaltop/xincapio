@@ -1,7 +1,24 @@
 # System Info
+Get system information.
 
-Get system information. CLI and GUI application.
+- Network interface name
+- IP address
+- MAC Address
+- Physical disk serial number
 
-- Unique Identifier for Computer (Processor Serial Number, Hard Drive Serial Number etc.)
-- Interface(IF) name
-- Mac Address, IP Address
+## Installation
+
+### Linux
+
+```
+$ ./install
+```
+
+### Windows
+
+```
+> system-info-installer.exe
+```
+
+## Build from source
+Please refer to [[./BUILD.md](./BUILD.md)].
