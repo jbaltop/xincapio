@@ -109,7 +109,6 @@ class MyWidget(QtWidgets.QMainWindow):
     def init_ui(self):
         self.system_info = self.my_app.get_info()
         self.show_info()
-        self.my_app.save_info(self.system_info, self.paths["data_file"])
 
     def show_info(self):
         if self.grid.count():

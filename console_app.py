@@ -63,8 +63,6 @@ class ConsoleApp:
                 self.path_exists(output_path)
             else:
                 self.path_not_exists(output_path)
-        else:
-            self.my_app.save_info(self.system_info, self.paths["data_file"])
 
     def path_exists(self, output_path):
         overwrite = input(
