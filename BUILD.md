@@ -44,10 +44,20 @@ $ pyinstaller --add-data "version.txt:." --add-data "LICENSE:." main.py
 > pyinstaller --add-data "version.txt;." --add-data "LICENSE;." main.py
 ```
 
-## Create Installer for Windows
+## Create Installer
+
+### Linux
+
+```
+$ ./create-installer
+```
+
+`system-info.tar.gz` will be created.
+
+### Windows
 
 - Start NSIS
-- Compiler > Compile NSI scripts
-- Drag and drop `system-info-installer.nsi` to NSIS window
+- `Compiler > Compile NSI scripts`
+- Drag and drop `create-installer.nsi` to NSIS window
 
-It will create `system-info-installer.exe` file.
+`system-info-installer.exe` will be created.
