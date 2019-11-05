@@ -11,7 +11,7 @@ Get system information.
 ### Linux
 
 ```
-$ ./install
+$ ./install-system-info
 ```
 
 ### Windows

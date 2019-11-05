@@ -6,13 +6,13 @@ cd $CWD
 INSTALL_DIR="$HOME/.local/share/System Information"
 
 mkdir --parents "$INSTALL_DIR"
-cp --recursive dist/main/ "$INSTALL_DIR"
+cp --recursive main/ "$INSTALL_DIR"
 
 # shell script to execute main application
 cp ./system-info "$INSTALL_DIR"
 
 # uninstaller
-cp ./uninstall-system-info.sh "$INSTALL_DIR"
+cp ./uninstall-system-info "$INSTALL_DIR"
 
 {
   echo "# systemInfoStart"

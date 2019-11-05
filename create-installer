@@ -1,0 +1,17 @@
+#!/bin/bash
+
+CWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd)"
+cd $CWD
+
+OUTPUT_DIR="./output"
+mkdir --parents "$OUTPUT_DIR/system-info"
+
+cp --recursive dist/main/ "$OUTPUT_DIR/system-info"
+cp ./system-info "$OUTPUT_DIR/system-info"
+cp ./uninstall-system-info "$OUTPUT_DIR/system-info"
+cp ./install-system-info "$OUTPUT_DIR/system-info"
+
+cd "$OUTPUT_DIR"
+
+# create archive
+tar czvf "system-info.tar.gz" "system-info/"
