@@ -17,6 +17,10 @@ CreateDirectory "$SMPROGRAMS\System Information\"
 CreateShortCut "$SMPROGRAMS\System Information\System Information.lnk" "$INSTDIR\main.exe" "--gui"
 CreateShortCut "$SMPROGRAMS\System Information\uninstall.exe.lnk" "$INSTDIR\uninstall.exe"
 
+# add uninstall information
+WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\System Information" "DisplayName" "System Information"
+WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\System Information" "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
+
 # default section end
 SectionEnd
 
@@ -30,5 +34,8 @@ RMDir /r $INSTDIR\Include
 RMDir /r $INSTDIR\PyQt5
 RMDir /r $INSTDIR\win32com
 RMDir /r "$SMPROGRAMS\System Information"
+
+# remove uninstall information
+DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\System Information"
 
 SectionEnd
