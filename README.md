@@ -33,7 +33,7 @@ Please refer to [[./BUILD.md](./BUILD.md)].
 #### Linux
 
 ```
-$ system-info
+$ system-info --gui
 ```
 
 #### Windows
@@ -44,8 +44,7 @@ $ system-info
 #### Linux
 
 ```
-$ cd "$HOME/.local/share/System Information/main"
-$ sudo ./main
+$ system-info
 ```
 
 #### Windows

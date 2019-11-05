@@ -4,4 +4,4 @@ INSTALL_DIR="$HOME/.local/share/System Information"
 
 cd "$INSTALL_DIR/main"
 
-sudo ./main --gui
+sudo ./main "$@"
