@@ -20,7 +20,7 @@ from datetime import datetime as dt
 
 # third party library
 from dateutil import tz
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Style:
@@ -440,6 +440,7 @@ class MyWidget(QtWidgets.QMainWindow):
             QtWidgets.QSizePolicy.Minimum,
         )
         self.grid.addItem(blank_space, i, 7)
+        i += 1
 
         blank_space = QtWidgets.QSpacerItem(
             0,
@@ -511,6 +512,70 @@ class AboutDialog(QtWidgets.QDialog):
 
     def init_ui(self):
         i = 0
+        blank_space = QtWidgets.QSpacerItem(
+            0,
+            Style.section_border,
+            QtWidgets.QSizePolicy.Minimum,
+            QtWidgets.QSizePolicy.Minimum,
+        )
+        self.grid.addItem(blank_space, i, 1)
+        i += 1
+
+        label = QtWidgets.QLabel("Developer")
+        label.setFont(self.h1_font)
+        self.grid.addWidget(label, i, 1)
+        i += 1
+
+        blank_space = QtWidgets.QSpacerItem(
+            0,
+            Style.section_border,
+            QtWidgets.QSizePolicy.Minimum,
+            QtWidgets.QSizePolicy.Minimum,
+        )
+        self.grid.addItem(blank_space, i, 1)
+        i += 1
+
+        label = QtWidgets.QLabel("Hajun Park")
+        label.setFont(self.default_font)
+        self.grid.addWidget(label, i, 1)
+        i += 1
+
+        label = QtWidgets.QLabel('<a href="mailto:jbaltop@gmail.com">jbaltop@gmail.com</a>')
+        label.setFont(self.default_font)
+        label.linkActivated.connect(self.open_link)
+        self.grid.addWidget(label, i, 1)
+        i += 1
+
+        label = QtWidgets.QLabel('<a href="https://github.com/jbaltop">https://github.com/jbaltop</a>')
+        label.setFont(self.default_font)
+        label.linkActivated.connect(self.open_link)
+        self.grid.addWidget(label, i, 1)
+        i += 1
+
+        blank_space = QtWidgets.QSpacerItem(
+            0,
+            Style.section_border,
+            QtWidgets.QSizePolicy.Minimum,
+            QtWidgets.QSizePolicy.Minimum,
+        )
+        self.grid.addItem(blank_space, i, 1)
+        i += 1
+
+        hline = QtWidgets.QFrame()
+        hline.setFrameShape(QtWidgets.QFrame.HLine)
+        hline.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.grid.addWidget(hline, i, 1)
+        i += 1
+
+        blank_space = QtWidgets.QSpacerItem(
+            0,
+            Style.section_border,
+            QtWidgets.QSizePolicy.Minimum,
+            QtWidgets.QSizePolicy.Minimum,
+        )
+        self.grid.addItem(blank_space, i, 1)
+        i += 1
+
         label = QtWidgets.QLabel("Version")
         label.setFont(self.h1_font)
         self.grid.addWidget(label, i, 1)
@@ -575,11 +640,23 @@ class AboutDialog(QtWidgets.QDialog):
         label = QtWidgets.QLabel(license)
         label.setFont(self.default_font)
         self.grid.addWidget(label, i, 1)
+        i += 1
+
+        blank_space = QtWidgets.QSpacerItem(
+            0,
+            Style.section_border,
+            QtWidgets.QSizePolicy.Minimum,
+            QtWidgets.QSizePolicy.Minimum,
+        )
+        self.grid.addItem(blank_space, i, 1)
 
         i += 1
         self.grid.setColumnStretch(0, 1)
         self.grid.setColumnStretch(2, 1)
         self.grid.setRowStretch(i, 1)
+
+    def open_link(self, url):
+        QtGui.QDesktopServices.openUrl(QtCore.QUrl(url))
 
 
 def _convert_timezone(from_time):
