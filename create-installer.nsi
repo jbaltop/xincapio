@@ -15,7 +15,7 @@ WriteUninstaller $INSTDIR\uninstall.exe
 
 CreateDirectory "$SMPROGRAMS\Xincapio\"
 CreateShortCut "$SMPROGRAMS\Xincapio\Xincapio.lnk" "$INSTDIR\main.exe" "--gui"
-CreateShortCut "$SMPROGRAMS\Xincapio\uninstall.exe.lnk" "$INSTDIR\uninstall.exe"
+CreateShortCut "$SMPROGRAMS\Xincapio\Uninstall.lnk" "$INSTDIR\uninstall.exe"
 
 # add uninstall information
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Xincapio" "DisplayName" "Xincapio"

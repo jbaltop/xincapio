@@ -52,7 +52,7 @@ $ pyinstaller --add-data "version.txt:." --add-data "LICENSE:." main.py
 $ ./create-installer
 ```
 
-`xincapio.tar.gz` will be created.
+`output/xincapio.tar.gz` will be created.
 
 ### Windows
 

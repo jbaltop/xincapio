@@ -53,3 +53,17 @@ $ xincapio
 > cd "C:\Program Files\xincapio" 
 > .\main.exe
 ```
+
+## Uninstallation
+
+### Linux
+
+```
+$ uninstall-xincapio
+```
+
+If something went wrong with `~/.bashrc`, restore from `~/.bashrc.bak`.
+
+### Windows
+
+`Start > Xincapio > Uninstall`
