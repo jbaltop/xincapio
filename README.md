@@ -61,4 +61,4 @@ If something went wrong with `~/.bashrc`, restore from `~/.bashrc.bak`.
 
 ### Windows
 
-`Start > Xincapio > Uninstall`
+`Control Panel > Programs > Programs and Features >> Xincapio > Uninstall`
