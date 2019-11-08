@@ -1,6 +1,6 @@
 #!/bin/bash
 
-INSTALL_DIR="$HOME/.local/share/System Information"
+INSTALL_DIR="$HOME/.local/share/xincapio"
 
 cd "$INSTALL_DIR/main"
 

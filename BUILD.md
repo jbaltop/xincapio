@@ -52,7 +52,7 @@ $ pyinstaller --add-data "version.txt:." --add-data "LICENSE:." main.py
 $ ./create-installer
 ```
 
-`system-info.tar.gz` will be created.
+`xincapio.tar.gz` will be created.
 
 ### Windows
 
@@ -60,4 +60,4 @@ $ ./create-installer
 - `Compiler > Compile NSI scripts`
 - Drag and drop `create-installer.nsi` to NSIS window
 
-`system-info-installer.exe` will be created.
+`xincapio-installer.exe` will be created.

@@ -1,7 +1,7 @@
 # name of the installer
-OutFile "system-info-installer.exe"
+OutFile "xincapio-installer.exe"
 
-InstallDir "$PROGRAMFILES64\System Information"
+InstallDir "$PROGRAMFILES64\xincapio"
 
 # default section start
 Section
@@ -13,13 +13,13 @@ File /r "dist\main\*"
 
 WriteUninstaller $INSTDIR\uninstall.exe
 
-CreateDirectory "$SMPROGRAMS\System Information\"
-CreateShortCut "$SMPROGRAMS\System Information\System Information.lnk" "$INSTDIR\main.exe" "--gui"
-CreateShortCut "$SMPROGRAMS\System Information\uninstall.exe.lnk" "$INSTDIR\uninstall.exe"
+CreateDirectory "$SMPROGRAMS\Xincapio\"
+CreateShortCut "$SMPROGRAMS\Xincapio\Xincapio.lnk" "$INSTDIR\main.exe" "--gui"
+CreateShortCut "$SMPROGRAMS\Xincapio\uninstall.exe.lnk" "$INSTDIR\uninstall.exe"
 
 # add uninstall information
-WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\System Information" "DisplayName" "System Information"
-WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\System Information" "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
+WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Xincapio" "DisplayName" "Xincapio"
+WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Xincapio" "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
 
 # default section end
 SectionEnd
@@ -33,9 +33,9 @@ Delete $INSTDIR\*
 RMDir /r $INSTDIR\Include
 RMDir /r $INSTDIR\PyQt5
 RMDir /r $INSTDIR\win32com
-RMDir /r "$SMPROGRAMS\System Information"
+RMDir /r "$SMPROGRAMS\Xincapio"
 
 # remove uninstall information
-DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\System Information"
+DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Xincapio"
 
 SectionEnd

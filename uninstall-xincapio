@@ -1,0 +1,13 @@
+#!/bin/bash
+
+INSTALL_DIR="$HOME/.local/share/xincapio"
+
+rm --recursive "$INSTALL_DIR"
+
+# create backup
+mv ~/.bashrc ~/.bashrc.bak
+
+sed '/^# xincapioStart$/,/^# xincapioEnd$/d' ~/.bashrc.bak > ~/.bashrc
+
+# remove backup
+# rm ~/.bashrc.bak

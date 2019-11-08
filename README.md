@@ -1,4 +1,4 @@
-# System Info
+# Xincapio
 Get system information.
 
 - Network interface name
@@ -11,16 +11,16 @@ Get system information.
 ### Linux
 
 ```
-$ tar xzvf system-info.tar.gz
-$ cd system-info
-$ ./install-system-info
+$ tar xzvf xincapio.tar.gz
+$ cd xincapio
+$ ./install-xincapio
 $ source "$HOME/.bashrc"
 ```
 
 ### Windows
 
 ```
-> system-info-installer.exe
+> xincapio-installer.exe
 ```
 
 ## Build from source
@@ -33,23 +33,23 @@ Please refer to [[./BUILD.md](./BUILD.md)].
 #### Linux
 
 ```
-$ system-info --gui
+$ xincapio --gui
 ```
 
 #### Windows
-`Start > System Information > System Information`
+`Start > Xincapio > Xincapio`
 
 ### Console
 
 #### Linux
 
 ```
-$ system-info
+$ xincapio
 ```
 
 #### Windows
 
 ```
-> cd "C:\Program Files\System Information" 
+> cd "C:\Program Files\xincapio" 
 > .\main.exe
 ```

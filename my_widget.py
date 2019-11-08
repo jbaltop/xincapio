@@ -1,13 +1,13 @@
 # Copyright (C) 2019 Hajun Park
 #
-# This file is part of System Information
+# This file is part of Xincapio
 #
-# System Information is free software: you can redistribute it and/or modify
+# Xincapio is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# System Information is distributed in the hope that it will be useful,
+# Xincapio is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
@@ -68,7 +68,7 @@ class MyWidget(QMainWindow):
         self.my_app = my_app
         self.paths = self.my_app.paths
 
-        self.setWindowTitle("System Information")
+        self.setWindowTitle("Xincapio")
         self.resize(900, 600)
         self.show()
 
