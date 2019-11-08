@@ -1,10 +1,5 @@
 # Xincapio
-Get system information.
-
-- Network interface name
-- IP address
-- MAC Address
-- Physical disk serial number
+Get IP address, MAC address and Disk Serial Number
 
 ## Installation
 

@@ -543,6 +543,49 @@ class AboutDialog(QDialog):
         self.grid.addItem(blank_space, i, 1)
         i += 1
 
+        label = QLabel("Xincapio")
+        label.setFont(self.h1_font)
+        self.grid.addWidget(label, i, 1)
+        i += 1
+
+        blank_space = QSpacerItem(
+            0,
+            Style.section_border,
+            QSizePolicy.Minimum,
+            QSizePolicy.Minimum,
+        )
+        self.grid.addItem(blank_space, i, 1)
+        i += 1
+
+        label = QLabel("Get IP address, MAC address and Disk Serial Number")
+        label.setFont(self.default_font)
+        self.grid.addWidget(label, i, 1)
+        i += 1
+
+        blank_space = QSpacerItem(
+            0,
+            Style.section_border,
+            QSizePolicy.Minimum,
+            QSizePolicy.Minimum,
+        )
+        self.grid.addItem(blank_space, i, 1)
+        i += 1
+
+        hline = QFrame()
+        hline.setFrameShape(QFrame.HLine)
+        hline.setFrameShadow(QFrame.Sunken)
+        self.grid.addWidget(hline, i, 1)
+        i += 1
+
+        blank_space = QSpacerItem(
+            0,
+            Style.section_border,
+            QSizePolicy.Minimum,
+            QSizePolicy.Minimum,
+        )
+        self.grid.addItem(blank_space, i, 1)
+        i += 1
+
         label = QLabel("Developer")
         label.setFont(self.h1_font)
         self.grid.addWidget(label, i, 1)
