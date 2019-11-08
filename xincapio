@@ -1,0 +1,7 @@
+#!/bin/bash
+
+INSTALL_DIR="$HOME/.local/share/xincapio"
+
+cd "$INSTALL_DIR/main"
+
+sudo ./main "$@"

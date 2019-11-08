@@ -1,0 +1,21 @@
+#!/bin/bash
+
+CWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd)"
+cd $CWD
+
+INSTALL_DIR="$HOME/.local/share/xincapio"
+
+mkdir --parents "$INSTALL_DIR"
+cp --recursive main/ "$INSTALL_DIR"
+
+# shell script to execute main application
+cp ./xincapio "$INSTALL_DIR"
+
+# uninstaller
+cp ./uninstall-xincapio "$INSTALL_DIR"
+
+{
+  echo "# xincapioStart"
+  echo "export PATH=\"$PATH:$INSTALL_DIR\""
+  echo "# xincapioEnd"
+} >> ~/.bashrc

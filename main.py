@@ -1,13 +1,13 @@
 # Copyright (C) 2019 Hajun Park
 #
-# This file is part of System Information
+# This file is part of Xincapio
 #
-# System Information is free software: you can redistribute it and/or modify
+# Xincapio is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# System Information is distributed in the hope that it will be useful,
+# Xincapio is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
@@ -17,11 +17,8 @@
 
 # standard library
 import json
-import logging
 import sys
-import time
 from datetime import datetime as dt
-from logging.config import fileConfig
 from pathlib import Path
 from platform import system
 
@@ -37,18 +34,14 @@ from my_widget import MyWidget, Style
 class App:
     def __init__(self, paths):
         self.paths = paths
-        fileConfig(self.paths["logging_conf"])
-        self.logger = logging.getLogger(__name__)
-        logging.Formatter.converter = time.gmtime
 
-        self.logger.info("Determining Operating System.")
         my_system = system()
         if my_system == "Linux":
             self.my_system = "Linux"
         elif my_system == "Windows":
             self.my_system = "Windows"
         else:
-            self.logger.error(
+            print(
                 f"This program only supports Linux and Windows, not '{my_system}'."
             )
             sys.exit()
@@ -74,7 +67,6 @@ class App:
 
     def save_info(self, system_info, path):
         json_data = json.dumps(system_info)
-        self.logger.info("Saving info to file.")
         with open(path, "wt", encoding="utf-8") as fout:
             fout.write(json_data)
 
@@ -84,32 +76,16 @@ def get_path():
     file = Path(__file__)
     project = file.parent
 
-    # directory
-    output = project / "output"
-    log = output / "log"
-
     # existing file
-    logging_conf = project / "configuration.ini"
     version = project / "version.txt"
     license = project / "LICENSE"
 
-    # output file
-    data_file = output / "system-info.json"
-
     paths = {
-        "data_file": data_file,
         "license": license,
-        "log": log,
-        "logging_conf": logging_conf,
         "version": version,
     }
 
     return paths
-
-
-def create_output_dir(paths):
-    if not Path(paths["log"]).exists():
-        Path.mkdir(paths["log"], parents=True)
 
 
 @click.command()
@@ -124,7 +100,6 @@ def main(gui, output, version):
             print(fin.read()[:-1])
         return
 
-    create_output_dir(paths)
     my_app = App(paths)
 
     if gui:

@@ -1,13 +1,13 @@
 # Copyright (C) 2019 Hajun Park
 #
-# This file is part of System Information
+# This file is part of Xincapio
 #
-# System Information is free software: you can redistribute it and/or modify
+# Xincapio is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# System Information is distributed in the hope that it will be useful,
+# Xincapio is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
@@ -17,7 +17,6 @@
 
 # standard library
 import fcntl
-import logging
 import re
 import shlex
 import struct
@@ -26,11 +25,8 @@ import subprocess
 # third party library
 import netifaces as ni
 
-logger = logging.getLogger(__name__)
-
 
 def get_network_info():
-    logger.info("Getting network info.")
     interfaces = ni.interfaces()
     network_info = []
     for interface in interfaces:
@@ -42,14 +38,12 @@ def get_network_info():
 
 
 def get_disk_info():
-    logger.info("Getting boot disk mount point.")
     out = subprocess.Popen(
         shlex.split("df /"), stdout=subprocess.PIPE
     ).communicate()
     m = re.search(r"(/[^\s]+)\s", str(out))
     mount_point = m.group(1)
 
-    logger.info("Getting boot disk serial number.")
     with open(mount_point, "rb") as fd:
         # tediously derived from the monster struct defined in <hdreg.h>
         # see comment at end of file to verify

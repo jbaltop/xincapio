@@ -1,13 +1,13 @@
 # Copyright (C) 2019 Hajun Park
 #
-# This file is part of System Information
+# This file is part of Xincapio
 #
-# System Information is free software: you can redistribute it and/or modify
+# Xincapio is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# System Information is distributed in the hope that it will be useful,
+# Xincapio is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
@@ -23,7 +23,6 @@ class ConsoleApp:
     def __init__(self, my_app, output):
         self.my_app = my_app
         self.output = output
-        self.paths = self.my_app.paths
         self.system_info = self.my_app.get_info()
 
     def prettify_message(self):
@@ -63,8 +62,6 @@ class ConsoleApp:
                 self.path_exists(output_path)
             else:
                 self.path_not_exists(output_path)
-        else:
-            self.my_app.save_info(self.system_info, self.paths["data_file"])
 
     def path_exists(self, output_path):
         overwrite = input(

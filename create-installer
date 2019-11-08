@@ -1,0 +1,17 @@
+#!/bin/bash
+
+CWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd)"
+cd $CWD
+
+OUTPUT_DIR="./output"
+mkdir --parents "$OUTPUT_DIR/xincapio"
+
+cp --recursive dist/main/ "$OUTPUT_DIR/xincapio"
+cp ./xincapio "$OUTPUT_DIR/xincapio"
+cp ./uninstall-xincapio "$OUTPUT_DIR/xincapio"
+cp ./install-xincapio "$OUTPUT_DIR/xincapio"
+
+cd "$OUTPUT_DIR"
+
+# create archive
+tar czvf "xincapio.tar.gz" "xincapio/"
